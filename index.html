@@ -130,6 +130,16 @@
         let yesButtonSize = 16; // Initial font size for "Yes" button
         let noButtonSize = 16; // Initial font size for "No" button
 
+        // Set the initial position of the "No" button to the right of the "Yes" button
+        function setInitialNoButtonPosition() {
+            const yesButtonRect = yesButton.getBoundingClientRect();
+            const noButtonRect = noButton.getBoundingClientRect();
+
+            // Position the "No" button to the right of the "Yes" button
+            noButton.style.left = `${yesButtonRect.right + 20}px`; // 20px gap
+            noButton.style.top = `${yesButtonRect.top}px`;
+        }
+
         // Function to move the "No" button
         function moveNoButton(event) {
             const maxOffsetX = window.innerWidth * 0.4; // Maximum horizontal offset
@@ -199,6 +209,9 @@
             heart.style.animationDelay = `${Math.random() * 6}s`;
             heartsContainer.appendChild(heart);
         }
+
+        // Set the initial position of the "No" button
+        setInitialNoButtonPosition();
 
         // Event listeners for touch and mouse interactions
         noButton.addEventListener('mouseover', moveNoButton);
