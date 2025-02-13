@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Valentine's Day Wish</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: center;
+            height: 100vh;
+            background: linear-gradient(135deg, #ff7eb3, #ff758c, #ff7eb3);
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            overflow: hidden;
+            position: relative;
+        }
+        .container {
+            text-align: center;
+            position: relative;
+            width: 100%;
+            height: 100%;
+        }
+        h1 {
+            color: white;
+            margin-top: 40px;
+            margin-bottom: 20px;
+            font-size: 2.5rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+        }
+        .buttons {
+            position: relative;
+            margin-top: 20px;
+            width: 100%;
+            height: 80%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        button {
+            padding: 15px 30px;
+            font-size: 16px;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: absolute;
+            font-family: 'Inter', sans-serif;
+            font-weight: bold;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            touch-action: none; /* Prevent default touch behavior */
+        }
+        #yesButton {
+            background-color: #4caf50;
+            color: white;
+            transform: translate(-50%, -50%);
+            top: 50%;
+            left: 50%;
+        }
+        #noButton {
+            background-color: #f44336;
+            color: white;
+            transform: translate(-50%, -50%);
+            top: 50%;
+            left: 50%;
+        }
+        #message {
+            margin-top: 20px;
+            font-size: 2rem;
+            color: white;
+            display: none;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+        }
+        /* Heart animation */
+        .hearts {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            pointer-events: none;
+        }
+        .hearts span {
+            position: absolute;
+            display: block;
+            width: 20px;
+            height: 20px;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>');
+            background-size: cover;
+            animation: animate 6s linear infinite;
+            opacity: 0; /* Start invisible */
+        }
+        @keyframes animate {
+            0% {
+                transform: translateY(-10%) scale(0);
+                opacity: 1; /* Fade in at the start */
+            }
+            100% {
+                transform: translateY(1000%) scale(1);
+                opacity: 0; /* Fade out at the end */
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Will you be my Valentine?</h1>
+        <div class="buttons">
+            <button id="yesButton">Yes</button>
+            <button id="noButton">No</button>
+        </div>
+        <div id="message">Happy Valentine's Day! 💖</div>
+    </div>
+
+    <!-- Heart animation -->
+    <div class="hearts">
+        <!-- Hearts will be dynamically added here -->
+    </div>
+
+    <script>
+        const yesButton = document.getElementById('yesButton');
+        const noButton = document.getElementById('noButton');
+        const container = document.querySelector('.container');
+        const message = document.getElementById('message');
+
+        let yesButtonSize = 16; // Initial font size for "Yes" button
+        let noButtonSize = 16; // Initial font size for "No" button
+
+        // Function to move the "No" button
+        function moveNoButton(event) {
+            const maxOffsetX = window.innerWidth * 0.4; // Maximum horizontal offset
+            const maxOffsetY = window.innerHeight * 0.4; // Maximum vertical offset
+            const containerRect = container.getBoundingClientRect();
+            const yesButtonRect = yesButton.getBoundingClientRect();
+
+            let newX, newY;
+            let attempts = 0;
+            const maxAttempts = 100; // Prevent infinite loops
+
+            do {
+                newX = (Math.random() - 0.5) * 2 * maxOffsetX;
+                newY = (Math.random() - 0.5) * 2 * maxOffsetY;
+                noButton.style.left = `calc(50% + ${newX}px)`;
+                noButton.style.top = `calc(50% + ${newY}px)`;
+
+                const noButtonRect = noButton.getBoundingClientRect();
+                attempts++;
+
+                // Break if we can't find a non-overlapping position after maxAttempts
+                if (attempts >= maxAttempts) break;
+            } while (isOverlap(yesButtonRect, noButton.getBoundingClientRect()));
+
+            // Increase the size of the "Yes" button at a faster pace
+            yesButtonSize += 6; // Increase font size by 6px
+            yesButton.style.fontSize = `${yesButtonSize}px`;
+
+            // Ensure the "Yes" button doesn't cover the text
+            if (yesButtonRect.bottom > containerRect.bottom - 40) { // 40px buffer
+                yesButton.style.top = `${containerRect.bottom - yesButtonRect.height - 40}px`;
+            }
+        }
+
+        // Function to shrink the "No" button
+        function shrinkNoButton() {
+            // Shrink the "No" button
+            if (noButtonSize > 10) {
+                noButtonSize -= 2; // Decrease font size by 2px
+                noButton.style.fontSize = `${noButtonSize}px`;
+            }
+        }
+
+        // Function to show the "Happy Valentine's Day!" message
+        function showMessage() {
+            message.style.display = 'block';
+            const buttons = document.querySelector('.buttons');
+            buttons.style.display = 'none';
+        }
+
+        // Function to check if two elements overlap
+        function isOverlap(rect1, rect2) {
+            return !(
+                rect1.top > rect2.bottom ||
+                rect1.bottom < rect2.top ||
+                rect1.left > rect2.right ||
+                rect1.right < rect2.left
+            );
+        }
+
+        // Add heart animation dynamically
+        const heartsContainer = document.querySelector('.hearts');
+        for (let i = 0; i < 20; i++) {
+            const heart = document.createElement('span');
+            heart.style.left = `${Math.random() * 100}%`;
+            heart.style.top = `${Math.random() * 100}%`; // Spread hearts vertically
+            heart.style.animationDelay = `${Math.random() * 6}s`;
+            heartsContainer.appendChild(heart);
+        }
+
+        // Event listeners for touch and mouse interactions
+        noButton.addEventListener('mouseover', moveNoButton);
+        noButton.addEventListener('touchstart', moveNoButton, { passive: true });
+        noButton.addEventListener('click', shrinkNoButton);
+        yesButton.addEventListener('click', showMessage);
+    </script>
+</body>
+</html>
